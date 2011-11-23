@@ -1,0 +1,8 @@
+<?php
+$manifest = array(
+	array(
+		'name' => 'style.css',
+		'templateRute => 'style.css',
+		'destinationRute' => 'style.css'
+	)
+)
