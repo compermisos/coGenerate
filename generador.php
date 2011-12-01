@@ -117,6 +117,7 @@ function painter($tree = array(),$templateDir = 'templates/basic/', $level = 0){
 				$file = new coSimpleTemplate($templateDir . 'file.tpl');
 				$file->set('name', htmlentities($tree[$i]['name'], ENT_QUOTES, "UTF-8"));
 				$file->set('namenotype', htmlentities($tree[$i]['namenotype'], ENT_QUOTES, "UTF-8"));
+				$file->set('nameclean', htmlentities(str_replace('_', ' ', $tree[$i]['namenotype']), ENT_QUOTES, "UTF-8"));
 				$file->set('pathname', htmlentities($tree[$i]['pathname'], ENT_QUOTES, "UTF-8") );
 				$file->set('filetype', $tree[$i]['type']);
 				$file->set('filesize', $tree[$i]['size']);
@@ -153,7 +154,11 @@ function copier($templateDir = 'templates/basic/', $basePath = './'){
 					mkdir($filepath, 0755, TRUE);
 				}
 			}
-			copy($templateDir . $file['templateRute'], $basePath . $file['destinationRute']);
+			if(file_exists($file['templateRute'])){
+				copy($file['templateRute'], $basePath . $file['destinationRute']);
+			}else{
+				copy($templateDir . $file['templateRute'], $basePath . $file['destinationRute']);
+			}
 		}
 }
 function generate($fileName = 'generado.html', $templateDir = 'templates/basic/', $basePath = './', $fileType = 'pdf', $recursive = 10){
@@ -175,14 +180,33 @@ function generate($fileName = 'generado.html', $templateDir = 'templates/basic/'
 	copier($templateDir, $basePath);
 }
 function html_nicer($html){
-	$config = array(
-           'indent'         => true,
-           'output-xhtml'   => true,
-           'wrap'           => 200);
-
-	// Tidy
-	$tidy = new tidy;
-	$clean = $tidy->repairString($html, $config, 'utf8');
+	$clean = $html;
+	if (class_exists('tidy')) {
+		$config = array(
+			'indent'         => true,
+			'output-xhtml'   => true,
+			'wrap'           => 200);
+		$tidy = new tidy;
+		$clean = $tidy->repairString($html, $config, 'utf8');
+	}
+	include_once(@"XML/Beautifier.php");/*TODO off the alert in case of fail*/
+	if (class_exists('XML_Beautifier')) {
+		$fmt = new XML_Beautifier();
+		$options = array(
+			"caseFolding"       => true,
+			"caseFoldingTo"     => "uppercase",
+			"normalizeComments" => true
+		);
+		$fmt->setOptions($options);
+		$fmt->setOption("indent", "\t");
+		$tempclean = $fmt->formatString($clean, 'plain');
+		if (PEAR::isError($tempclean)) {
+			echo $tempclean->getMessage();
+			#exit();
+		}else {
+			$clean = $tempclean;
+		}
+	}	
 	return $clean;
 }
 
@@ -210,5 +234,35 @@ class coSimpleTemplate {
 		return $output;
 	}
 }
-generate('generado.html', 'templates/basic/', basedir, fileType, max_recursive);
+/*generate('generado.html', 'templates/basic/', basedir, fileType, max_recursive);
+var_dump($argv);
+var_dump($argc);*/
+echo('Usage generador.php fileToGenerate routeToTemplate baseDir fileTypeToCatalog maxRecursive');
+$var = array();
+if(isset($argv[1])){
+	$var[1] = $argv[1];
+}else{
+	$var[1] = 'generado.html';
+}
+if(isset($argv[2])){
+	$var[2] = $argv[2];
+}else{
+	$var[2] = 'templates/basic/';
+}
+if(isset($argv[3])){
+	$var[3] = $argv[3];
+}else{
+	$var[3] = basedir;
+}
+if(isset($argv[4])){
+	$var[4] = $argv[4];
+}else{
+	$var[4] = fileType;
+}
+if(isset($argv[5])){
+	$var[5] = $argv[5];
+}else{
+	$var[5] = max_recursive;
+}
+generate($var[1],$var[2],$var[3],$var[4],$var[5]);
 ?>
