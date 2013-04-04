@@ -5,14 +5,14 @@
     http://pear.php.net/dtd/package-2.0.xsd">
   <name>${project.name}</name>
   <channel>${project.channel}</channel>
-  <summary>Summary goes here</summary>
+  <summary>Simple directory listener</summary>
   <description>
-    Description goes here
+    Make a prety directory indexes.
   </description>
   <lead>
-    <name>Your name</name>
-    <user>Anything goes here</user>
-    <email>Your email address</email>
+    <name>Jesus Christian Cruz Acono</name>
+    <user>Compermisos</user>
+    <email>Compermisos@gmail.com</email>
     <active>yes</active>
   </lead>
   <date>${build.date}</date>
@@ -25,7 +25,7 @@
     <release>${project.stability}</release>
     <api>stable</api>
   </stability>
-  <license>All rights reserved.</license>
+  <license>BSD</license>
   <notes>
     No notes.
   </notes>
@@ -47,6 +47,12 @@ ${contents}
         <channel>pear.phix-project.org</channel>
         <min>3.0.0</min>
         <max>3.999.9999</max>
+      </package>
+      <package>
+        <name>coSimpleTemplate</name>
+        <channel>compermisos.github.com/pear</channel>
+        <min>0.1.0</min>
+        <max>1.999.9999</max>
       </package>
     </required>
   </dependencies>

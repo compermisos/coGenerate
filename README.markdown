@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME].png)](https://travis-ci.org/[YOUR_GITHUB_USERNAME]/[YOUR_PROJECT_NAME])
 coGenerador is really simple "catalog generator" original designed for generate a catalog of pdf files. And used for more "cool" tricks
 
 use
